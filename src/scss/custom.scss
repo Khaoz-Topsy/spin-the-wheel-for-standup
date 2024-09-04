@@ -1,0 +1,65 @@
+@import './page';
+@import './wheel';
+@import './emojiPanel';
+
+$linkColour: #00ffff;
+
+body {
+  ::selection {
+    background: #662954;
+    color: white;
+    /* WebKit/Blink Browsers */
+  }
+
+  ::-moz-selection {
+    background: #662954;
+    color: white;
+    /* Gecko Browsers */
+  }
+
+  a {
+    color: $linkColour;
+  }
+}
+
+.hidden-in-desktop {
+  @media screen and (min-width: 980px) {
+    display: none !important;
+  }
+}
+
+.hidden-in-mobile {
+  @media screen and (max-width: 980px) {
+    display: none !important;
+  }
+}
+
+.hidden-in-tiny-mobile {
+  @media screen and (max-width: 500px) {
+    display: none !important;
+  }
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.max-lines-1 {
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+  text-overflow: ellipsis;
+}
+
+emoji-picker {
+  margin: 0 auto;
+}

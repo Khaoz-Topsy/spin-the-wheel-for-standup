@@ -1,0 +1,32 @@
+{
+    "editor.formatOnSave": true,
+    "typescript.preferences.quoteStyle": "single",
+    "[typescript]": {
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+      }
+    },
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript", // Enable .ts
+      "typescriptreact" // Enable .tsx
+    ],
+    "prettier.trailingComma": "all",
+    "prettier.tabWidth": 2,
+    "prettier.semi": true,
+    "prettier.singleQuote": true,
+    "prettier.printWidth": 100,
+    "cSpell.language": "en,en-GB",
+    "cSpell.words": [
+      "callout",
+      "Khaoz",
+      "Lourens",
+      "nmscd",
+      "noselect",
+      "peerjs",
+      "solidjs",
+      "typedi",
+      "uuidv"
+    ],
+}

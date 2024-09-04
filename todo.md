@@ -1,0 +1,5 @@
+- spinner
+  - auto split based on items in list
+- form
+  - can add name and emoji
+- confetti on selection

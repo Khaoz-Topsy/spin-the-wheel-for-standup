@@ -1,0 +1,46 @@
+name: Build and Deploy
+run-name: BuildAndDeploy
+
+on:
+  push:
+    branches: ['main']
+  workflow_dispatch:
+
+concurrency:
+  group: 'buildDeploy'
+  cancel-in-progress: true
+
+permissions:
+  pull-requests: write
+  contents: write
+  pages: write
+
+env:
+  node-version: [21.x]
+
+jobs:
+  buildDeploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: 'npm'
+
+      - name: Build site
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.3.4
+        with:
+          folder: ./dist # The folder the action should deploy.
+
