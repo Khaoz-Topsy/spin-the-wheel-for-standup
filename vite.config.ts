@@ -3,7 +3,6 @@ import solidPlugin from 'vite-plugin-solid';
 // import devtools from 'solid-devtools/vite';
 
 export default defineConfig({
-  base: '/spin-the-wheel-for-standup/',
   plugins: [
     /* 
     Uncomment the following line to enable solid-devtools.
