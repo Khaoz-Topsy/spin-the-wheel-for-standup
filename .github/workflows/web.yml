@@ -15,9 +15,6 @@ permissions:
   contents: write
   pages: write
 
-env:
-  NODE_VERSION: [21.x]
-
 jobs:
   buildDeploy:
     name: Build and Deploy
@@ -28,10 +25,9 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ env.NODE_VERSION }}
+      - name: Use Node.js 
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Build site
