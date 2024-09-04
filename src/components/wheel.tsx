@@ -1,4 +1,4 @@
-import { createEffect, createSignal, JSX, onMount, type Component } from 'solid-js';
+import { createEffect, createSignal, JSX, type Component } from 'solid-js';
 
 import { WheelOption } from '../contracts/wheelOption';
 
@@ -30,8 +30,8 @@ export const Wheel: Component<IProps> = (props: IProps) => {
   }, [props.options, props.options.length]);
 
   const spinTheWheel = () => {
-    const selectedItem = 1; //Math.round(Math.random() * (props.options.length - 1));
-    console.log(selectedItem);
+    if (props.options.length < 1) return;
+    const selectedItem = Math.round(Math.random() * (props.options.length - 1));
     setWinnerIndex(selectedItem);
 
     const selectedItemAngle = selectedItem * anglePerSlice();
