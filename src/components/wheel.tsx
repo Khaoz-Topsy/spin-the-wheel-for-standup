@@ -1,9 +1,15 @@
 import { createEffect, createSignal, JSX, type Component } from 'solid-js';
 
 import { WheelOption } from '../contracts/wheelOption';
+import { WheelMeta } from '../contracts/wheelMeta';
 
 interface IProps {
   options: Array<WheelOption>;
+  meta: WheelMeta;
+  isSpinning: boolean;
+  setIsSpinning: (newValue: boolean) => void;
+  setMeta: (newMeta: WheelMeta) => void;
+  showConfetti: (emojis: Array<string>) => void;
   enableName: (optId: string, isEnabled: boolean) => void;
 }
 
@@ -20,6 +26,7 @@ export const Wheel: Component<IProps> = (props: IProps) => {
   const [rotationInc, setRotationInc] = createSignal<number>(0);
   const [isShaking, setIsShaking] = createSignal<boolean>(false);
   const [winnerIndex, setWinnerIndex] = createSignal<number>(0);
+  const [isArrowTicking, setArrowTicking] = createSignal<boolean>(false);
   const [isModalOpen, setModalOpen] = createSignal<boolean>(false);
 
   const centerPoint = size / 2 + viewBoxPadding;
@@ -38,44 +45,78 @@ export const Wheel: Component<IProps> = (props: IProps) => {
     const randomAngleWithinSlice = Math.round(Math.random() * anglePerSlice());
     const randomSpotOnItem = randomAngleWithinSlice - anglePerSlice() / 2;
 
-    const randomNumOfSpins = Math.round(Math.random() * 10) + 5;
+    const randomNumOfSpins = Math.round(Math.random() * 5) + 5;
     const randomRotationIncrement = randomNumOfSpins * 360;
     const selectedItemAngleWithRandomness = selectedItemAngle + randomSpotOnItem;
     setTimeout(() => {
       setSelectedAngle(selectedItemAngleWithRandomness);
       setRotationInc((prev) => prev + randomRotationIncrement);
+      props.setIsSpinning(true);
     }, 250);
 
-    if (randomNumOfSpins > 10) {
+    const heavySpinDuration = props.meta.duration / 3;
+    setTimeout(() => {
+      setArrowTicking(true);
+      setTimeout(() => {
+        setArrowTicking(false);
+      }, heavySpinDuration);
+    }, heavySpinDuration);
+
+    const emojisToShow: Array<string> = ['🎉'];
+    if (randomNumOfSpins > 7) {
+      emojisToShow.push('✨');
       setTimeout(() => {
         setIsShaking(true);
         setTimeout(() => {
           setIsShaking(false);
-        }, 4000);
-      }, 2000);
+        }, heavySpinDuration * 2);
+      }, heavySpinDuration);
     }
 
     setTimeout(() => {
+      const winner = props.options[selectedItem];
+      emojisToShow.push(winner.emoji);
       setModalOpen(true);
-    }, 5500);
+      props.setIsSpinning(false);
+      props.showConfetti(emojisToShow);
+    }, props.meta.duration + 500);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    props.setIsSpinning(false);
   };
 
   const Outer = (outerProps: { children: JSX.Element }) => {
     return (
       <div class="wheel" onClick={spinTheWheel}>
         <div class="outer">
-          <div class="selection" style={{ transform: `rotate(-${selectedAngle()}deg)` }}>
-            <div class="spin" style={{ transform: `rotate(${rotationInc()}deg)` }}>
-              <div
-                class={`shake animate__animated ${isShaking() ? shakeClass : ''}`}
-                style="--animate-duration: 2s"
-              >
-                <div class="wheel">{outerProps.children}</div>
+          <div
+            class="selection"
+            style={{
+              transform: `rotate(-${selectedAngle()}deg)`,
+              'transition-duration': `${props.meta.duration - 500}ms`,
+            }}
+          >
+            <div
+              class="spin"
+              style={{
+                transform: `rotate(${rotationInc()}deg)`,
+                'transition-duration': `${props.meta.duration - 500}ms`,
+              }}
+            >
+              <div class={props.isSpinning ? 'initial-spin stop' : 'initial-spin'}>
+                <div
+                  class={`shake animate__animated ${isShaking() ? shakeClass : ''}`}
+                  style={`--animate-duration: ${props.meta.duration / 3}ms`}
+                >
+                  <div class="wheel">{outerProps.children}</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <span class="arrow">▼</span>
+        <span class={`arrow ${isArrowTicking() ? 'is-spinning' : ''}`}>▼</span>
       </div>
     );
   };
@@ -157,7 +198,7 @@ export const Wheel: Component<IProps> = (props: IProps) => {
       <dialog open={isModalOpen()}>
         <article>
           <header>
-            <span class="pointer" style={{ float: 'right' }} onClick={() => setModalOpen(false)}>
+            <span class="pointer" style={{ float: 'right' }} onClick={closeModal}>
               ❌
             </span>
             <strong>🎉 The winner is</strong>
@@ -170,11 +211,14 @@ export const Wheel: Component<IProps> = (props: IProps) => {
           <div class="grid">
             <button
               class="secondary"
-              onClick={() => props.enableName(props.options[winnerIndex()]?.id ?? '', false)}
+              onClick={() => {
+                closeModal();
+                props.enableName(props.options[winnerIndex()]?.id ?? '', false);
+              }}
             >
               Hide choice
             </button>
-            <button onClick={() => setModalOpen(false)}>Close</button>
+            <button onClick={closeModal}>Close</button>
           </div>
         </article>
       </dialog>
