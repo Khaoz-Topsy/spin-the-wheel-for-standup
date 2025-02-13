@@ -68,11 +68,11 @@ export const WheelForm: Component<IProps> = (props: IProps) => {
         <input type="submit" value="+" onClick={onAdd} disabled={props.isSpinning} />
       </fieldset>
 
-      <ul>
+      <ul class="team">
         {(props.options ?? [])
           .sort((a, b) => a.name.localeCompare(b.name))
-          .map((opt) => (
-            <li class="pointer">
+          .map((opt, index) => (
+            <li>
               <span onClick={() => props.removeName(opt)}>
                 {opt.emoji}&nbsp;{opt.name}
               </span>

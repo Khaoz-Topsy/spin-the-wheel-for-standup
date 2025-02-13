@@ -13,3 +13,14 @@
     }
   }
 }
+
+.team {
+  li {
+    padding-bottom: 5px;
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
+
+    input[type="checkbox"] {
+      margin-top: 10px;
+    }
+  }
+}
